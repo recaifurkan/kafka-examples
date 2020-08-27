@@ -112,7 +112,11 @@ public class SimpleConsumer<K extends Serializable, V extends Serializable> impl
 	}
 	
 	public static void main(String[] args) {
+<<<<<<< HEAD
 
+=======
+		
+>>>>>>> 83d91d0d6d4e40a74fed2ac71192a6300d6878af
 		ArgumentParser parser = argParser();
 		
 		try {

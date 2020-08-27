@@ -33,6 +33,7 @@ import static net.sourceforge.argparse4j.impl.Arguments.store;
 public class BasicProducerExample {
 
     public static void main(String[] args) {
+<<<<<<< HEAD
 
         String brokerList ="kafka:9093";
         String topic = "test";
@@ -63,6 +64,52 @@ public class BasicProducerExample {
 
         producer.close();
 
+=======
+        ArgumentParser parser = argParser();
+
+        try {
+            Namespace res = parser.parseArgs(args);
+
+            /* parse args */
+            String brokerList = res.getString("bootstrap.servers");
+            String topic = res.getString("topic");
+            Boolean syncSend = res.getBoolean("syncsend");
+            long noOfMessages = res.getLong("messages");
+            long delay = res.getLong("delay");
+            String messageType = res.getString("messagetype");
+
+
+            Properties producerConfig = new Properties();
+            producerConfig.put("bootstrap.servers", brokerList);
+            producerConfig.put("client.id", "basic-producer");
+            producerConfig.put("acks", "all");
+            producerConfig.put("retries", "3");
+            producerConfig.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.ByteArraySerializer");
+            producerConfig.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.ByteArraySerializer");
+
+            SimpleProducer<byte[], byte[]> producer = new SimpleProducer<>(producerConfig, syncSend);
+
+            for (int i = 0; i < noOfMessages; i++) {
+                producer.send(topic, getKey(i), getEvent(messageType, i));
+                try {
+                    Thread.sleep(delay);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            producer.close();
+        } catch (ArgumentParserException e) {
+            if (args.length == 0) {
+                parser.printHelp();
+                System.exit(0);
+            } else {
+                parser.handleError(e);
+                System.exit(1);
+            }
+        }
+
+>>>>>>> 83d91d0d6d4e40a74fed2ac71192a6300d6878af
     }
 
     private static byte[] getEvent(String messageType, int i) {
